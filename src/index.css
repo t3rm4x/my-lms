@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 5%;
+    --foreground: 180 100% 90%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 180 100% 90%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 180 100% 90%;
+
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 158 100% 50%;
+    --secondary-foreground: 0 0% 5%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 180 50% 60%;
+
+    --accent: 186 100% 50%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 180 30% 20%;
+    --input: 180 30% 15%;
+    --ring: 186 100% 50%;
+
+    --radius: 0.5rem;
+
+    --cyber-glow: 186 100% 50%;
+    --cyber-secondary-glow: 158 100% 50%;
+    --grid-color: 180 30% 12%;
+  }
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+  
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    background-image: 
+      linear-gradient(to right, hsl(var(--grid-color)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--grid-color)) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .cyber-glow {
+    text-shadow: 0 0 10px hsl(var(--cyber-glow)), 0 0 20px hsl(var(--cyber-glow));
+  }
+
+  .cyber-border {
+    border-color: hsl(var(--border));
+    box-shadow: 0 0 10px hsla(var(--cyber-glow) / 0.3);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
