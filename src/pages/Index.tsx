@@ -7,7 +7,7 @@ import { toast } from "sonner";
 const Index = () => {
   const navigate = useNavigate();
   const authenticated = isAuthenticated();
-  const user = getUser();
+  const user = getUser(); // This will now use the new, honest User type
 
   const handleLogout = () => {
     logout();
@@ -35,69 +35,58 @@ const Index = () => {
               Advanced Authentication System with Military-Grade Security
             </p>
 
-            {authenticated && user ? (
-              <div className="space-y-4">
-                <div className="bg-card border border-border cyber-border rounded-lg p-6 max-w-md mx-auto">
-                  <p className="text-sm text-muted-foreground mb-2 font-mono">AUTHENTICATED USER</p>
-                  <p className="text-lg font-mono text-primary">{user.email}</p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Status: {user.verified ? (
-                      <span className="text-secondary">✓ Verified</span>
-                    ) : (
-                      <span className="text-destructive">⚠ Unverified</span>
-                    )}
+            {/* ----- MAIN CHANGE IS HERE ----- */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {authenticated && user ? (
+                // --- HONEST USER CARD ---
+                <div className="bg-card border border-border cyber-border rounded-lg p-6 text-left animate-slide-up">
+                  <p className="text-sm text-muted-foreground">Authenticated User:</p>
+                  <p className="font-mono text-primary cyber-glow text-xl">
+                    {user.name}
                   </p>
-                </div>
-                
-                <div className="flex gap-4 justify-center">
-                  {!user.verified && (
-                    <Button
-                      onClick={() => navigate("/verify")}
-                      className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-mono font-semibold shadow-[0_0_20px_rgba(0,255,136,0.3)]"
-                    >
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      VERIFY EMAIL
-                    </Button>
-                  )}
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="border-destructive text-destructive hover:bg-destructive hover:text-white font-mono font-semibold"
-                  >
-                    <Terminal className="mr-2 h-4 w-4" />
-                    LOGOUT
+                  <p className="text-sm text-muted-foreground">
+                    {user.email} {/* <-- No more 'verified' check! */}
+                  </p>
+                  <p className="text-sm text-muted-foreground capitalize">
+                    Role: {user.userType}
+                  </p>
+                  <Button onClick={handleLogout} className="w-full mt-4" variant="destructive">
+                    Logout
                   </Button>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button
-                  onClick={() => navigate("/login")}
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-semibold shadow-[0_0_20px_rgba(0,245,255,0.3)] min-w-[200px]"
-                >
-                  <Lock className="mr-2 h-5 w-5" />
-                  LOGIN
-                </Button>
-                <Button
-                  onClick={() => navigate("/register")}
-                  size="lg"
-                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-mono font-semibold shadow-[0_0_20px_rgba(0,255,136,0.3)] min-w-[200px]"
-                >
-                  <UserPlus className="mr-2 h-5 w-5" />
-                  REGISTER
-                </Button>
-              </div>
-            )}
+              ) : (
+                // --- ORIGINAL LOGIN/REGISTER BUTTONS ---
+                <>
+                  <Button
+                    onClick={() => navigate("/login")}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-semibold text-lg py-6 px-8 shadow-[0_0_20px_rgba(0,245,255,0.3)]"
+                  >
+                    <Lock className="mr-2 h-5 w-5" />
+                    LOGIN
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/register")}
+                    className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-mono font-semibold text-lg py-6 px-8 shadow-[0_0_20px_rgba(0,255,136,0.3)]"
+                  >
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    REGISTER
+                  </Button>
+                </>
+              )}
+            </div>
+            {/* ----- END OF CHANGE ----- */}
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <div className="container mx-auto px-4 py-20">
-        <h2 className="text-4xl font-bold font-mono text-center mb-12 cyber-glow">
-          SECURITY FEATURES
-        </h2>
+      <div className="container mx-auto px-4 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold font-mono cyber-glow">CORE FEATURES</h2>
+          <p className="text-muted-foreground mt-2">
+            Built with a security-first mindset
+          </p>
+        </div>
         
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="bg-card border border-border cyber-border rounded-lg p-6 hover:shadow-[0_0_30px_rgba(0,245,255,0.2)] transition-all">
@@ -118,9 +107,9 @@ const Index = () => {
 
           <div className="bg-card border border-border cyber-border rounded-lg p-6 hover:shadow-[0_0_30px_rgba(0,245,255,0.2)] transition-all">
             <Zap className="h-12 w-12 text-primary mb-4" />
-            <h3 className="text-xl font-bold font-mono mb-2">REAL-TIME MONITORING</h3>
+            <h3 className="text-xl font-bold font-mono mb-2">LIGHTNING FAST</h3>
             <p className="text-muted-foreground">
-              Continuous security monitoring and instant threat detection
+              Serverless architecture ensures minimal latency and maximum scalability
             </p>
           </div>
         </div>

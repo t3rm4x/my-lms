@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { registerUser } from "@/services/register";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; //NEW Import
 // Assuming you have this util file
 // import { validateEmail, validatePassword } from "@/utils/util"; 
 import { Shield, UserPlus } from "lucide-react";
@@ -16,6 +17,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [userType, setUserType] = useState<'student' | 'instructor'>('student');
+  const [instructorCode, setInstructorCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,7 +44,7 @@ const Register = () => {
     setLoading(true);
 
     // This function now calls the real API
-    const result = await registerUser({ name, email, username, password });
+    const result = await registerUser({ name, email, username, password, userType, instructorCode});
 
     if (result.success) {
       toast.success(result.message);
@@ -115,6 +118,39 @@ const Register = () => {
                 className="bg-input border-border focus:border-secondary font-mono"
               />
             </div>
+            <div className="space-y-2">
+            <Label className="font-mono">Account Type</Label>
+            <RadioGroup
+              value={userType}
+              onValueChange={(value: 'student' | 'instructor') => setUserType(value)}
+              className="flex space-x-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="student" id="r1" />
+                <Label htmlFor="r1" className="font-mono">Student</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="instructor" id="r2" />
+                <Label htmlFor="r2" className="font-mono">Instructor</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* === ADD THIS CONDITIONAL FIELD === */}
+          {userType === 'instructor' && (
+            <div className="space-y-2 animate-slide-up">
+              <Label htmlFor="instructorCode" className="font-mono">Instructor Code</Label>
+              <Input
+                id="instructorCode"
+                type="password"
+                placeholder="Enter secret registration code"
+                value={instructorCode}
+                onChange={(e) => setInstructorCode(e.target.value)}
+                required
+                className="bg-input border-border focus:border-secondary font-mono"
+              />
+            </div>
+          )}
 
             <div className="space-y-2">
               <Label htmlFor="password" className="font-mono">Password</Label>

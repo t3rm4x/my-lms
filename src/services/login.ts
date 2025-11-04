@@ -1,15 +1,30 @@
 // Login service
-
 import { setAuthToken, setUser } from '@/utils/auth';
-import type { User } from '@/utils/auth'; // Assuming this 'User' type matches the mock's shape
+import type { User } from '@/utils/auth'; // Imports the new, lean User type
 
-// 1. UPDATED: Your backend (login.js) requires 'username', not 'email'.
-// Your login form must provide a 'username'.
+/**
+ * Defines the data structure required for login.
+ * Must match the backend 'login.js' input.
+ */
 export interface LoginData {
   username: string;
   password: string;
 }
 
+/**
+ * Defines the backend's raw user response.
+ * We'll adapt this to our frontend 'User' type.
+ */
+interface BackendUser {
+  username: string;
+  name: string;
+  email: string;
+  userType: 'student' | 'instructor';
+}
+
+/**
+ * Defines the service's response.
+ */
 export interface LoginResponse {
   success: boolean;
   message: string;
@@ -17,26 +32,38 @@ export interface LoginResponse {
   token?: string;
 }
 
-// 2. SECURITY WARNING: Move this to an environment variable!
-// This key is visible to everyone on your website.
-const API_URL = import.meta.env.VITE_API_LOGIN_URL
-const API_KEY =  import.meta.env.VITE_API_KEY
+// Get API URL and Key from Vite environment variables
+const API_URL = import.meta.env.VITE_API_LOGIN_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
+/**
+ * Calls the backend /login endpoint.
+ * On success, saves the token and user to localStorage.
+ */
 export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
+  if (!API_URL || !API_KEY) {
+    return { success: false, message: "Client-side configuration error. API key or URL is missing." };
+  }
+
   try {
-    // 3. REPLACED MOCK: This is the real network request
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY // AWS API Gateway uses 'x-api-key'
+        'x-api-key': API_KEY
       },
       body: JSON.stringify(data)
     });
 
-    const responseData = await response.json();
+    let responseData;
+    try {
+      responseData = await response.json();
+    } catch (e) {
+      console.error('Failed to parse JSON response:', e);
+      responseData = { message: `Server error (Status: ${response.status}). Please try again.` };
+    }
 
-    // 4. Handle failed login (401, 500, etc.)
+    // Handle failed login (401, 503, etc.)
     if (!response.ok) {
       return {
         success: false,
@@ -44,23 +71,21 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
       };
     }
 
-    // 5. Handle successful login (HTTP 200)
-    // The backend's response body is: { user: { username, name }, token }
-    const backendUser = responseData.user;
-    const token = responseData.token;
+    // Handle successful login (HTTP 200)
+    // Backend response is: { user: { username, name, userType }, token }
+    const backendUser: BackendUser = responseData.user;
+    const token: string = responseData.token;
 
-    // 6. ADAPTATION: We must convert the backend's simple user object
-    // into the 'User' object your frontend (setUser) expects.
-    // This is a *guess* based on your original mock.
+    // Adapt the backend response to our frontend User type
+    // This is now 1:1, no more "faking" data.
     const user: User = {
-      id: backendUser.username, // Using 'username' as 'id'
-      email: '', // Your backend login does not return an email!
+      id: backendUser.username,
       name: backendUser.name,
-      verified: true, // We assume the user is verified if they can log in
-      createdAt: new Date() // We have to fake this
+      userType: backendUser.userType,
+      email: backendUser.email,
     };
     
-    // 7. Set auth state in the browser
+    // Set auth state in the browser
     setAuthToken(token);
     setUser(user);
     
@@ -72,10 +97,10 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
     };
 
   } catch (error) {
-    console.error('Login service error:', error);
+    console.error('Login service network error:', error);
     return {
       success: false,
-      message: 'A network error occurred. Please try again.'
+      message: 'A network error occurred. Please check your connection and try again.'
     };
   }
 };

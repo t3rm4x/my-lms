@@ -2,10 +2,9 @@
 
 export interface User {
   id: string;
-  email: string;
   name: string;
-  verified: boolean;
-  createdAt: Date;
+  userType: 'student' | 'instructor';
+  email: string;
 }
 
 export const setAuthToken = (token: string): void => {
