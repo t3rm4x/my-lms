@@ -44,20 +44,20 @@ const Register = () => {
     setLoading(true);
 
     // This function now calls the real API
-    const result = await registerUser({ name, email, username, password, userType, instructorCode});
+    const result = await registerUser({ 
+      name, email, username, password, userType, instructorCode});
+    setLoading(false);
 
     if (result.success) {
       toast.success(result.message);
       // Since registration doesn't log us in, navigate to login
-      navigate("/login"); 
+      navigate('/verify', { state: { username: username } });
+      
     } else {
-      // The backend error message (e.g., "Username already exists") will be shown
+      // This will show "Username already exists", "Invalid instructor code", etc.
       toast.error(result.message);
     }
-
-    setLoading(false);
   };
-
   return (
     // This outer container centers everything
     <div className="min-h-screen flex items-center justify-center p-4">

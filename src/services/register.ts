@@ -1,10 +1,7 @@
 // Registration service
-import type { User } from '@/utils/auth';
+import { resendVerificationCode } from './verify'; // <-- 1. IMPORT THE NEW TOOL
 
-/**
- * Defines the data structure required for registration.
- * Must match the backend 'register.js' input.
- */
+// The interfaces are the same, as they were already correct
 export interface RegisterData {
   name: string;
   email: string;
@@ -14,10 +11,6 @@ export interface RegisterData {
   instructorCode?: string;
 }
 
-/**
- * Defines the service's response.
- * The backend only returns a success/error message.
- */
 export interface RegisterResponse {
   success: boolean;
   message: string;
@@ -27,16 +20,14 @@ export interface RegisterResponse {
 const API_URL = import.meta.env.VITE_API_REGISTER_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-/**
- * Calls the backend /register endpoint.
- * This function does NOT log the user in.
- */
 export const registerUser = async (data: RegisterData): Promise<RegisterResponse> => {
   if (!API_URL || !API_KEY) {
-    return { success: false, message: "Client-side configuration error. API key or URL is missing." };
+    console.error("Missing VITE_API_REGISTER_URL or VITE_API_KEY");
+    return { success: false, message: "Client-side configuration error." };
   }
 
   try {
+    // --- 2. THIS IS THE REGISTRATION CALL ---
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
@@ -46,29 +37,41 @@ export const registerUser = async (data: RegisterData): Promise<RegisterResponse
       body: JSON.stringify(data)
     });
 
-    // Try to parse the JSON body, even on errors
-    let responseData = { message: 'Registration failed. Please try again.' };
+    let responseData;
     try {
       responseData = await response.json();
     } catch (e) {
-      // This catches 502 Bad Gateway errors that return HTML
-      console.error('Failed to parse JSON response:', e);
+      console.error("Failed to parse JSON response:", e);
       responseData = { message: `Server error (Status: ${response.status}). Please try again.` };
     }
 
     if (!response.ok) {
-      // Use the error message from the backend's JSON response
+      // Handles "Username already exists", "Invalid instructor code", etc.
       return {
         success: false,
-        message: responseData.message 
+        message: responseData.message || 'Registration failed.'
       };
     }
 
-    // Success: Backend returned 200
-    // The backend only returns { username: "..." }
+    // --- 3. THIS IS THE NEW LOGIC! ---
+    // Registration was successful! Now, immediately send the verification email.
+    // We use data.username because the backend `register.js` only returns { username: "..." }
+    const sendResult = await resendVerificationCode(data.username);
+
+    if (!sendResult.success) {
+      // This is an awkward state, but we must report it.
+      // The user *was* created, but the email *failed* to send.
+      return {
+        success: true, // Registration worked
+        message: 'Account created, but failed to send verification email. Please try to log in.'
+      };
+    }
+
+    // --- 4. PERFECT SUCCESS ---
+    // The user was created AND the email was sent.
     return {
       success: true,
-      message: 'Registration successful! You can now log in.'
+      message: 'Registration successful! Check your email for a verification code.'
     };
 
   } catch (error) {

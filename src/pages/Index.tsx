@@ -28,7 +28,7 @@ const Index = () => {
             </div>
             
             <h1 className="text-6xl md:text-7xl font-bold font-mono cyber-glow">
-              CYBERSEC<span className="text-secondary">URITY</span>
+              CYBER<span className="text-secondary">SECURITY</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
@@ -38,14 +38,14 @@ const Index = () => {
             {/* ----- MAIN CHANGE IS HERE ----- */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {authenticated && user ? (
-                // --- HONEST USER CARD ---
                 <div className="bg-card border border-border cyber-border rounded-lg p-6 text-left animate-slide-up">
                   <p className="text-sm text-muted-foreground">Authenticated User:</p>
                   <p className="font-mono text-primary cyber-glow text-xl">
                     {user.name}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {user.email} {/* <-- No more 'verified' check! */}
+                    {/* NO MORE "unverified"!! Just the email. */}
+                    {user.email} 
                   </p>
                   <p className="text-sm text-muted-foreground capitalize">
                     Role: {user.userType}
