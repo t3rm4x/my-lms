@@ -28,11 +28,11 @@ const Index = () => {
             </div>
             
             <h1 className="text-6xl md:text-7xl font-bold font-mono cyber-glow">
-              CYBER<span className="text-secondary">SECURITY</span>
+              Learn<span className="text-secondary">Hub</span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-              Advanced Authentication System with Military-Grade Security
+              Your goto place for all your learning resources on the Cloud.
             </p>
 
             {/* ----- MAIN CHANGE IS HERE ----- */}
@@ -62,14 +62,14 @@ const Index = () => {
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-mono font-semibold text-lg py-6 px-8 shadow-[0_0_20px_rgba(0,245,255,0.3)]"
                   >
                     <Lock className="mr-2 h-5 w-5" />
-                    LOGIN
+                    Login
                   </Button>
                   <Button
                     onClick={() => navigate("/register")}
                     className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-mono font-semibold text-lg py-6 px-8 shadow-[0_0_20px_rgba(0,255,136,0.3)]"
                   >
                     <UserPlus className="mr-2 h-5 w-5" />
-                    REGISTER
+                    Register
                   </Button>
                 </>
               )}
@@ -82,7 +82,7 @@ const Index = () => {
       {/* Features Section */}
       <div className="container mx-auto px-4 py-24">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold font-mono cyber-glow">CORE FEATURES</h2>
+          <h2 className="text-4xl font-bold cyber-glow">CORE FEATURES</h2>
           <p className="text-muted-foreground mt-2">
             Built with a security-first mindset
           </p>
@@ -93,7 +93,7 @@ const Index = () => {
             <Database className="h-12 w-12 text-primary mb-4" />
             <h3 className="text-xl font-bold font-mono mb-2">ENCRYPTED STORAGE</h3>
             <p className="text-muted-foreground">
-              All data is encrypted with AES-256 encryption at rest and in transit
+              All data is encrypted at rest and in transit, stored in secure S3 buckets
             </p>
           </div>
 
@@ -101,7 +101,7 @@ const Index = () => {
             <Shield className="h-12 w-12 text-secondary mb-4" />
             <h3 className="text-xl font-bold font-mono mb-2">MULTI-FACTOR AUTH</h3>
             <p className="text-muted-foreground">
-              Enhanced security with email verification and secure token-based authentication
+              Enhanced security with email verification and secure token-based authentication for Instructor registration and login
             </p>
           </div>
 

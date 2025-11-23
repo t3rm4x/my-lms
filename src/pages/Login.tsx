@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { loginUser } from "@/services/login";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   
   // 2. Your backend login.js REQUIRES 'username'.
   const [username, setUsername] = useState("");
@@ -29,10 +30,11 @@ const Login = () => {
     if (result.success) {
       // --- Case 1: Perfect Login ---
       toast.success("Login Successful!", { description: "Redirecting..." });
-      // We reload the window on the main page to ensure all
-      // auth state (like the Index.tsx header) is re-evaluated.
-      navigate("/");
-      window.location.reload(); 
+      // If user was redirected to login from a protected route, return them there
+      type LocationState = { from?: { pathname?: string } } | null;
+      const locState = location.state as LocationState;
+      const from = locState?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     } else {
       // --- Case 2: The *NEW* MFA Flow ---
       // Our backend login.js sent this special code

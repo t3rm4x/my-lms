@@ -69,8 +69,8 @@ const Register = () => {
           <div className="flex justify-center mb-4">
             <Shield className="h-16 w-16 text-secondary cyber-glow" />
           </div>
-          <h1 className="text-4xl font-bold font-mono cyber-glow">CREATE ACCOUNT</h1>
-          <p className="text-muted-foreground mt-2">Join our secure platform</p>
+          <h1 className="text-4xl font-bold cyber-glow">&nbsp;&nbsp;CREATE&nbsp;&nbsp;ACCOUNT</h1>
+          <p className="text-muted-foreground mt-2">&nbsp;&nbsp;&nbsp;Join our secure platform</p>
         </div>
 
         {/* === FORM CARD === */}
