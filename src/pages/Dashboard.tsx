@@ -138,7 +138,7 @@ export default function LearnHubDashboard(): JSX.Element {
       <header className="bg-card/60 backdrop-blur-sm border-b border-border fixed w-full z-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <img src="../img.png" alt="logo" className="w-12 h-12 rounded-md object-cover" />
+            <img src="https://github.com/t3rm4x/my-lms/blob/main/img.png?raw=true" alt="logo" className="w-12 h-12 rounded-md object-cover" />
             <div>
               <div className="text-lg font-semibold font-mono cyber-glow">LearnHub</div>
               <div className="text-xs text-muted-foreground">Student Portal</div>
