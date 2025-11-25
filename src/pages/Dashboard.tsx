@@ -291,10 +291,10 @@ export default function LearnHubDashboard(): JSX.Element {
 
                         <div className="flex-none ml-2 flex items-center gap-2">
                           <a href={f.url} target="_blank" rel="noreferrer" title="Open" className="p-2 rounded-full hover:bg-card/40">
-                            <ExternalLink className="w-4 h-4 text-primary-foreground" />
+                            <ExternalLink className="w-4 h-4 text-white" />
                           </a>
                           <a href={f.url} download title="Download" className="p-2 rounded-full hover:bg-card/40">
-                            <DownloadCloud className="w-4 h-4 text-primary-foreground" />
+                            <DownloadCloud className="w-4 h-4 text-white" />
                           </a>
                         </div>
                       </div>
