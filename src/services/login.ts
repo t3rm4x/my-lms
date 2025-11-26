@@ -72,6 +72,7 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
     let responseData;
     try {
       responseData = await response.json();
+      console.log('Backend response:', responseData); // Debug logging
     } catch (e) {
       // Handle cases where the server sends non-JSON (like a 502 Gateway Error)
       console.error("Failed to parse JSON response:", e);
@@ -80,9 +81,10 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
 
     // --- 1. CHECK FOR MFA FLOW FIRST (200 with MFA_CODE_SENT) ---
     if (response.ok && responseData.code === 'MFA_CODE_SENT') {
+      console.log('MFA flow detected, returning with code');
       return {
         success: false,  // Not fully logged in yet, need MFA
-        message: responseData.message,
+        message: responseData.message || 'MFA code sent to your email',
         code: 'MFA_CODE_SENT'
       };
     }
@@ -123,6 +125,14 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
 
     // --- 3. COMPLETE LOGIN SUCCESS (200 with user + token) ---
     // This only happens after MFA verification
+    if (!responseData.user || !responseData.token) {
+      console.error('Unexpected response format:', responseData);
+      return {
+        success: false,
+        message: 'Unexpected server response. Please try again.'
+      };
+    }
+
     const backendUser: BackendUser = responseData.user;
     const token: string = responseData.token;
 
