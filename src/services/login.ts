@@ -78,7 +78,16 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
       responseData = { message: `Server error (Status: ${response.status}). Please try again.` };
     }
 
-    // Handle failed login with detailed logging
+    // --- 1. CHECK FOR MFA FLOW FIRST (200 with MFA_CODE_SENT) ---
+    if (response.ok && responseData.code === 'MFA_CODE_SENT') {
+      return {
+        success: false,  // Not fully logged in yet, need MFA
+        message: responseData.message,
+        code: 'MFA_CODE_SENT'
+      };
+    }
+
+    // --- 2. HANDLE FAILED LOGIN ---
     if (!response.ok) {
       console.error('Login failed:', {
         status: response.status,
@@ -106,23 +115,14 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
         }
       }
       
-      // Handle 200 success with MFA code (special case)
-      if (response.status === 200 && responseData.code === 'MFA_CODE_SENT') {
-        return {
-          success: false,  // Not fully logged in yet
-          message: responseData.message,
-          code: 'MFA_CODE_SENT'
-        };
-      }
-      
       return {
         success: false,
         message: responseData.message || 'Login failed. Please check your credentials.'
       };
     }
 
-    // --- 2. HONEST DATA MAPPING ---
-    // Handle successful login (HTTP 200)
+    // --- 3. COMPLETE LOGIN SUCCESS (200 with user + token) ---
+    // This only happens after MFA verification
     const backendUser: BackendUser = responseData.user;
     const token: string = responseData.token;
 
