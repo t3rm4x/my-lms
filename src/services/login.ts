@@ -27,7 +27,7 @@ export interface LoginResponse {
   message: string;
   user?: User;
   token?: string;
-  code?: string; // <-- NEW: This will hold 'EMAIL_NOT_VERIFIED'
+  code?: string; // <-- This can be 'EMAIL_NOT_VERIFIED' or 'MFA_CODE_SENT'
 }
 
 export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
@@ -104,6 +104,15 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
             message: 'Authentication failed. Please contact support.'
           };
         }
+      }
+      
+      // Handle 200 success with MFA code (special case)
+      if (response.status === 200 && responseData.code === 'MFA_CODE_SENT') {
+        return {
+          success: false,  // Not fully logged in yet
+          message: responseData.message,
+          code: 'MFA_CODE_SENT'
+        };
       }
       
       return {

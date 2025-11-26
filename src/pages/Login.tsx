@@ -36,20 +36,24 @@ const Login = () => {
       const from = locState?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
     } else {
-      // --- Case 2: The *NEW* MFA Flow ---
-      // Our backend login.js sent this special code
-      if (result.code === 'EMAIL_NOT_VERIFIED') {
+      // --- Case 2: Handle Special Response Codes ---
+      
+      // MFA code sent - navigate to MFA verification page
+      if (result.code === 'MFA_CODE_SENT') {
+        toast.success("Code Sent!", {
+          description: "Please check your email for the verification code"
+        });
+        navigate('/mfa-verify', { state: { username: username } });
+      }
+      // Email not verified - navigate to email verification page
+      else if (result.code === 'EMAIL_NOT_VERIFIED') {
         toast.error(result.message, {
           description: "You will be redirected to the verification page."
         });
-        
-        // CRITICAL: We pass the username to the /verify page
-        // so it knows *who* to verify.
         navigate('/verify', { state: { username: username } });
-
-      } else {
-        // --- Case 3: Normal Error ---
-        // (e.g., "Wrong password", "User not found")
+      }
+      // --- Case 3: Normal Error ---
+      else {
         toast.error(result.message);
       }
     }

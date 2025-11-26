@@ -44,7 +44,9 @@ export const API_URLS = {
   register: validateUrl(import.meta.env.VITE_API_REGISTER_URL, 'Register'),
   verify: validateUrl(import.meta.env.VITE_API_VERIFY_URL, 'Verify'),
   sendVerification: validateUrl(import.meta.env.VITE_API_SEND_URL, 'Send Verification'),
-  verifyCode: validateUrl(import.meta.env.VITE_API_VERIFYCODE_URL, 'Verify Code')
+  verifyCode: validateUrl(import.meta.env.VITE_API_VERIFYCODE_URL, 'Verify Code'),
+  mfaSend: validateUrl(import.meta.env.VITE_API_MFA_SEND_URL, 'MFA Send'),
+  mfaVerify: validateUrl(import.meta.env.VITE_API_MFA_VERIFY_URL, 'MFA Verify')
 };
 
 export async function apiRequest(url: string, options: RequestInit) {
